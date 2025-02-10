@@ -1,0 +1,1 @@
+class_name ConnectionNetworkLayer extends NetworkLayer
