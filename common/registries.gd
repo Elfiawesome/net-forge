@@ -6,7 +6,11 @@ class CategoryRegistry:
 
 # Default registry categories
 const CLIENT_BOUND_PACKET := "client_bound_packet"
+const LOCAL_WORLD := "local_world"
+const LOCAL_ENTITY := "local_entity"
 const SERVER_BOUND_PACKET := "server_bound_packet"
+const REMOTE_WORLD := "remote_world"
+const REMOTE_ENTITY := "remote_world"
 
 # Main registry storage
 var registries: Dictionary[String, CategoryRegistry] = {}

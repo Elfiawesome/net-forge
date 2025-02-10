@@ -1,10 +1,10 @@
 class_name NetworkLayer extends Node
 
-var port := 3115
-var address := "127.0.0.1"
-
 @warning_ignore("unused_signal")
 signal data_received(_packet_name: String, _packet_data: Dictionary)
+
+var port := 3115
+var address := "127.0.0.1"
 
 var my_player_id: String
 
