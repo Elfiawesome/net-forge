@@ -2,8 +2,8 @@ class_name CommonRegistryService extends Node
 
 static func register_client_resource() -> void:
 	_register_all_scripts_in_folder(Registries.CLIENT_BOUND_PACKET, "res://client/packet/", false)
-	_register_all_scenes_in_folder(Registries.LOCAL_WORLD, "res://client/world/")
-	_register_all_scenes_in_folder(Registries.LOCAL_ENTITY, "res://client/entity/")
+	_register_all_scenes_in_folder(Registries.LOCAL_WORLD, "res://client/world/local_world/")
+	_register_all_scenes_in_folder(Registries.LOCAL_ENTITY, "res://client/entity/local_entity/")
 
 static func register_server_resource() -> void:
 	_register_all_scripts_in_folder(Registries.SERVER_BOUND_PACKET, "res://server/packet/", false)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=29 format=4 uid="uid://b13s7xvair8hq"]
 
-[ext_resource type="Script" uid="uid://bptt0lb67m7n3" path="res://client/world/crystal_bay.gd" id="1_7nqft"]
+[ext_resource type="Script" uid="uid://bptt0lb67m7n3" path="res://client/world/local_world/crystal_bay.gd" id="1_7nqft"]
 [ext_resource type="Texture2D" uid="uid://b52dho2m5nc6s" path="res://assets/texture/tilemap/1_terrain.png" id="2_7evap"]
 [ext_resource type="Texture2D" uid="uid://cp7j6qjixwrvp" path="res://assets/texture/tilemap/2_indoors.png" id="3_oeh56"]
 [ext_resource type="Texture2D" uid="uid://cge28yhqlyv6q" path="res://assets/texture/tilemap/11_roofs.png" id="4_apkjo"]

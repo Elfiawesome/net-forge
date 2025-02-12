@@ -1,4 +1,4 @@
 class_name ServerBoundPacket extends RefCounted
 
-func run(_client: Server, _packet_data: Dictionary) -> void:
+func run(_server: Server, _sender_id: String, _packet_data: Dictionary) -> void:
 	pass

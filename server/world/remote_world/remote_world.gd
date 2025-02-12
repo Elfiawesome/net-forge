@@ -1,6 +1,7 @@
 class_name RemoteWorld extends Node
 
 var world_type: String
+var connected_players: Array[String] = []
 var entity_service: RemoteEntityService = RemoteEntityService.new(self)
 
 func _ready() -> void:
