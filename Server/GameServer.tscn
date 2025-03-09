@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://ca37j20tuj0y2"]
+
+[ext_resource type="Script" uid="uid://bmisnli20cglv" path="res://Server/GameServer.gd" id="1_5a0d7"]
+[ext_resource type="Script" uid="uid://21fs7ddvxtkt" path="res://Server/WorldManager.gd" id="2_ymp65"]
+[ext_resource type="Script" uid="uid://bsfstocxkjrs5" path="res://Server/NetworkManager.gd" id="3_pnx6b"]
+
+[node name="Server" type="Node"]
+script = ExtResource("1_5a0d7")
+
+[node name="WorldManager" type="Node" parent="."]
+script = ExtResource("2_ymp65")
+
+[node name="NetworkManager" type="Node" parent="."]
+script = ExtResource("3_pnx6b")
