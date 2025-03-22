@@ -13,14 +13,14 @@ config_version=5
 config/name="NetForge"
 config/description="NetForge is a lightweight and flexible multiplayer game server-client architecture framework built for Godot 4. It provides a solid foundation for developers to create multiplayer games with a low-level networking approach, focusing on server-client communication via your own network layers."
 config/version="0.0.1"
-run/main_scene="uid://cxkdjdjumsr2y"
+run/main_scene="uid://chgm7pe78itw8"
 config/features=PackedStringArray("4.4", "Forward Plus")
 boot_splash/show_image=false
 
 [autoload]
 
-Bootstrap="*res://Common/Bootstrap.gd"
-Global="*res://Common/Global.gd"
+Global="*res://common/global.gd"
+Bootstrap="*res://common/bootstrap.gd"
 
 [debug]
 
@@ -34,11 +34,10 @@ window/size/viewport_height=480
 [file_customization]
 
 folder_colors={
-"res://Asset/": "teal",
-"res://Client/": "blue",
-"res://Common/": "orange",
-"res://Saves/": "gray",
-"res://Server/": "red"
+"res://asset/": "blue",
+"res://client/": "teal",
+"res://common/": "purple",
+"res://server/": "red"
 }
 
 [rendering]

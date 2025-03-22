@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://ceapc6u02bpj4"]
+
+[ext_resource type="Script" uid="uid://b18xg6x6s3fgu" path="res://client/game_session.gd" id="1_ib635"]
+
+[node name="GameSession" type="Node2D"]
+script = ExtResource("1_ib635")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
