@@ -3,7 +3,7 @@ class_name Server extends Node
 var tcp_server: TCPServer
 
 var player_manager := preload("res://server/player_manager.gd").new()
-var clients: Dictionary[String, Client] = {}
+var clients: Dictionary[String, ClientBase] = {}
 
 func _ready() -> void:
 	var port := 3115
@@ -14,20 +14,21 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if tcp_server.is_connection_available():
 		var client := Client.new(tcp_server.take_connection())
-		client.packet_received.connect(_on_client_handle_data.bind(client))
-		add_child(client)
+		take_client_connection(client)
 
-func _on_client_handle_data(type: String, data: Array, client: Client) -> void:
+func take_client_connection(client: ClientBase) -> void:
+	client.packet_received.connect(_on_client_handle_data.bind(client))
+	add_child(client)
+
+func _on_client_handle_data(type: String, data: Array, client: ClientBase) -> void:
 	print("Server packet: " + type + " -> " +str(data) + " {" + str(client.id) + "}")
 	var handler := PacketHandlerServer.get_handler(type)
 	if !handler: return
 	handler.run(self, client, data)
 
-class Client extends Node:
+class ClientBase extends Node:
 	signal packet_received(type: String, data: Array)
 	
-	var stream_peer: StreamPeerTCP
-	var packet_peer: PacketPeerStream
 	var state: State = State.NONE
 	var id: String
 	
@@ -36,11 +37,6 @@ class Client extends Node:
 		REQUEST,
 		PLAY
 	}
-	
-	func _init(connection: StreamPeerTCP) -> void:
-		stream_peer = connection
-		packet_peer = PacketPeerStream.new()
-		packet_peer.stream_peer = stream_peer
 	
 	func _ready() -> void:
 		var t := Timer.new()
@@ -55,11 +51,31 @@ class Client extends Node:
 		)
 	
 	func force_disconnect(disconnect_reason: String = "Unknown disconnected by server.") -> void:
-		var disconnect_data := {"reason":disconnect_reason}
-		stream_peer.put_var(["ForceDisconnect", disconnect_data])
-		stream_peer.disconnect_from_host()
+		var disconnect_data := {"reason": disconnect_reason}
+		send_data("ForceDisconnect", [disconnect_data])
 		packet_received.emit("ConnectionLost", [disconnect_data])
 		queue_free()
+	
+	func send_data(type: String, data: Array) -> void: pass
+
+class ClientIntegrated extends ClientBase:
+	signal packet_sent(type: String, data: Array)
+	
+	func send_data(type: String, data: Array) -> void:
+		packet_sent.emit(type, data)
+
+class Client extends ClientBase:
+	var stream_peer: StreamPeerTCP
+	var packet_peer: PacketPeerStream
+	
+	func _init(connection: StreamPeerTCP) -> void:
+		stream_peer = connection
+		packet_peer = PacketPeerStream.new()
+		packet_peer.stream_peer = stream_peer
+	
+	func force_disconnect(disconnect_reason: String = "Unknown disconnected by server.") -> void:
+		super.force_disconnect(disconnect_reason)
+		stream_peer.disconnect_from_host()
 	
 	func _process(_delta: float) -> void:
 		stream_peer.poll()
@@ -76,3 +92,7 @@ class Client extends Node:
 				data.pop_at(0)
 				var packet_data: Array = data
 				packet_received.emit(packet_type, packet_data)
+	
+	func send_data(type: String, data: Array) -> void:
+		data.push_front(type)
+		stream_peer.put_var(data)

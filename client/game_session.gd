@@ -1,6 +1,6 @@
 class_name GameSession extends CanvasLayer
 
-var network_connection: NetworkConnection
+var network_connection: NetworkConnectionBase
 
 @onready var disconnect_panel: Panel = $DisconnectPanel
 @onready var disconnect_label: Label = $DisconnectPanel/Label
@@ -10,19 +10,17 @@ func _ready() -> void:
 	if Global.instance_num == 0:
 		var server := preload("res://server/server.tscn").instantiate()
 		add_child(server)
+		network_connection = NetworkConnectionIntegrated.new(server)
+	else:
+		network_connection = NetworkConnectionServer.new()
 	
-	network_connection = NetworkConnection.new()
 	network_connection.packet_received.connect(_on_handle_data)
 	add_child(network_connection)
 	network_connection.connect_to_server("127.0.0.1", 3115, "Elfiawesome23" + str(Global.instance_num))
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		if event.keycode == KEY_Q and event.pressed:
-			network_connection.leave_server()
-
-func _process(delta: float) -> void:
-	$UI/Label.text = "Status: %s" % network_connection.get_status()
+func _process(_delta: float) -> void:
+	if network_connection:
+		$UI/Label.text = "Status: %s" % network_connection.get_status()
 
 func _on_handle_data(type: String, data: Array) -> void:
 	print("Client packet: " + type + " -> " +str(data))
@@ -31,15 +29,36 @@ func _on_handle_data(type: String, data: Array) -> void:
 	handler.run(self, data)
 
 class NetworkConnectionBase extends Node:
-	func connect_to_server(address_: String, port_: int, username: String) -> void: pass
-	func get_status() -> int: return 0
-	func leave_server() -> void: pass
-
-class NetworkConnection extends NetworkConnectionBase:
 	signal packet_received(type: String, data: Array)
 	
-	var address: String = "127.0.0.1"
-	var port: int = 3115
+	func connect_to_server(_address: String, _port: int, _username: String) -> void: pass
+	func get_status() -> int: return 0
+	func leave_server() -> void: pass
+	func send_data(type: String, data: Array) -> void: pass
+
+class NetworkConnectionIntegrated extends NetworkConnectionBase:
+	var server: Server
+	var client: Server.ClientIntegrated
+	
+	func _init(server_: Server) -> void:
+		server = server_
+	
+	func connect_to_server(_address: String, _port: int, username: String) -> void:
+		client = server.ClientIntegrated.new()
+		server.take_client_connection(client)
+		client.packet_sent.connect(_on_packet_received)
+		client.packet_received.emit("ConnectionRequest", [username])
+	
+	func send_data(type: String, data: Array) -> void:
+		client.packet_received.emit(type, data)
+
+	
+	func _on_packet_received(type: String, data: Array) -> void:
+		packet_received.emit(type, data)
+
+class NetworkConnectionServer extends NetworkConnectionBase:
+	var address: String
+	var port: int
 	
 	var stream_peer: StreamPeerTCP
 	var packet_peer: PacketPeerStream
@@ -64,15 +83,25 @@ class NetworkConnection extends NetworkConnectionBase:
 		if stream_peer: return stream_peer.get_status()
 		return stream_peer.Status.STATUS_NONE
 	
+	func disconnect_from_server(disconnect_reason: String = "Unknown disconnected by server.") -> void:
+		var disconnect_data := {"reason": disconnect_reason}
+		packet_received.emit("ForceDisconnect", [disconnect_data])
+		leave_server()
+	
 	func leave_server() -> void:
 		stream_peer.disconnect_from_host()
+		queue_free()
+	
+	func send_data(type: String, data: Array) -> void:
+		packet_peer.put_var([type, data])
 	
 	func _process(_delta: float) -> void:
+		if !stream_peer: return
 		stream_peer.poll()
 		
 		var status := stream_peer.get_status()
 		if (status == stream_peer.Status.STATUS_ERROR) or (status == stream_peer.Status.STATUS_NONE):
-			pass
+			disconnect_from_server()
 		
 		while (packet_peer.get_available_packet_count() > 0):
 			var data: Variant = packet_peer.get_var()

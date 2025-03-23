@@ -10,4 +10,4 @@ static func register() -> void:
 static func get_handler(packet_type: String) -> PacketHandlerServer:
 	return REGISTRY.get_object(packet_type)
 
-func run(_server: Server, _client: Server.Client, _data: Array) -> void: pass
+func run(_server: Server, _client: Server.ClientBase, _data: Array) -> void: pass

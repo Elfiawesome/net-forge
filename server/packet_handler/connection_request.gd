@@ -1,7 +1,7 @@
 extends PacketHandlerServer
 ## IMPORTANT BECAUSE WE DO THE INITIALIZING AND HANDSHAKE HERE!
 
-func run(server: Server, client: Server.Client, data: Array) -> void: 
+func run(server: Server, client: Server.ClientBase, data: Array) -> void: 
 	if !validate_data(data): return
 	
 	if client.state == client.State.PLAY:

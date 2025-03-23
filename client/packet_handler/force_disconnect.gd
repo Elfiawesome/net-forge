@@ -5,3 +5,4 @@ func run(game: GameSession, data: Array) -> void:
 	game.disconnect_panel.visible = true
 	game.disconnect_label.text = "Disconnected\n"
 	game.disconnect_label.text += disconnect_data.get("reason", "")
+	game.network_connection.leave_server()
