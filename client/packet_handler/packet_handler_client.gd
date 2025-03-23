@@ -3,11 +3,9 @@ class_name PacketHandlerClient extends RefCounted
 static var REGISTRY := RegistrySimple.new()
 
 static func register() -> void:
-	pass
-
+	REGISTRY.register_object("ForceDisconnect", load("res://client/packet_handler/force_disconnect.gd").new())
 
 static func get_handler(packet_type: String) -> PacketHandlerClient:
 	return REGISTRY.get_object(packet_type)
 
-# TODO: Needs to have client/gamesessioniin here
-func run() -> void: pass
+func run(_game: GameSession, _data: Array) -> void: pass

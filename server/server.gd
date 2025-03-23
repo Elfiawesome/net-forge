@@ -51,10 +51,10 @@ class Client extends Node:
 			func() -> void:
 				t.queue_free()
 				if state != State.PLAY:
-					force_disconnect()
+					force_disconnect("Timeout. No connection request was made by client.")
 		)
 	
-	func force_disconnect(disconnect_reason: String = "Unknown disconnected by server") -> void:
+	func force_disconnect(disconnect_reason: String = "Unknown disconnected by server.") -> void:
 		var disconnect_data := {"reason":disconnect_reason}
 		stream_peer.put_var(["ForceDisconnect", disconnect_data])
 		stream_peer.disconnect_from_host()
@@ -66,7 +66,7 @@ class Client extends Node:
 		
 		var status := stream_peer.get_status()
 		if (status == stream_peer.Status.STATUS_ERROR) or (status == stream_peer.Status.STATUS_NONE):
-			force_disconnect("Unkown disconnected by player")
+			force_disconnect("Unkown disconnected by player.")
 		
 		while (packet_peer.get_available_packet_count() > 0):
 			var data: Variant = packet_peer.get_var()
