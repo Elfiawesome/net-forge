@@ -22,7 +22,7 @@ func run(server: Server, client: Server.Client, data: Array) -> void:
 	
 	
 	server.player_manager.add_player(hash_id)
-	var player := server.player_manager.get_player(hash_id)
+	var _player := server.player_manager.get_player(hash_id)
 
 func validate_data(data: Array) -> bool:
 	if data.size() != 1: return false

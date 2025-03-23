@@ -1,4 +1,4 @@
-extends Node2D
+extends CanvasLayer
 
 var peer: StreamPeerTCP
 var packet: PacketPeerStream
@@ -14,12 +14,12 @@ func _ready() -> void:
 	peer.connect_to_host("127.0.0.1", 3115)
 	peer.poll()
 	packet.put_var(["ConnectionRequest", "Elfiawesome23"+str(Global.instance_num)])
-	#packet.put_var(["ConnectionRequest", "Elfiawesome23"])
+
 
 func _process(_delta: float) -> void:
 	peer.poll()
-	$Label.text = Time.get_datetime_string_from_system()
-	$Label.text += "\n Status: " + str(peer.get_status())
+	$UI/Label.text = Time.get_datetime_string_from_system()
+	$UI/Label.text += "\n Status: " + str(peer.get_status())
 	
 	
 	while (packet.get_available_packet_count() > 0):

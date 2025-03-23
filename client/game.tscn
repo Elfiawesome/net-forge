@@ -2,6 +2,6 @@
 
 [ext_resource type="PackedScene" uid="uid://ceapc6u02bpj4" path="res://client/game_session.tscn" id="1_2fswn"]
 
-[node name="Game" type="Node2D"]
+[node name="Game" type="CanvasLayer"]
 
 [node name="GameSession" parent="." instance=ExtResource("1_2fswn")]
