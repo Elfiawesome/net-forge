@@ -4,7 +4,7 @@ extends ServerSpaceManager.ServerSpace
 var map_area_name: String = "null"
 
 func load_from_json(map_json: Dictionary) -> void:
-	print("Loaded map!")
+	print("Loaded '%s' map from JSON!" % map_json.get("name", "null"))
 
 func save_into_json() -> Dictionary:
 	return {

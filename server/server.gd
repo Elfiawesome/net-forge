@@ -13,15 +13,16 @@ func _ready() -> void:
 	network_manager.packet_received.connect(_on_packet_received)
 	
 	# create a space
-	var map_area_1 := preload("res://server/spaces/space_map.gd").new()
-	map_area_1.load_from_json(save_file_manager.load_map_state("bodega_bay"))
-	
-	#var map_area_2 := preload("res://server/spaces/space_map.gd").new()
-	
-	
-	#space_manager.add_space(map_area_1)
-	#space_manager.add_space(map_area_2)
+	load_world("bodega_bay")
+	load_world("sunny_dunes")
 
+
+# TODO: Temp only. need proper way of dynamically loading worlds when needed
+func load_world(map_id: String) -> void:
+	var map_area := preload("res://server/spaces/space_map.gd").new()
+	map_area.load_from_json(save_file_manager.load_map_state(map_id))
+	space_manager.add_space(map_area)
+	space_manager._map_name_to_id[map_id] = map_area.id
 
 func _on_packet_received(type: String, data: Array, conn: NetworkServerManager.Connection) -> void:
 	print("[SERVER] received from [%s] -> [%s]: %s" % [type, data, conn.id])

@@ -13,7 +13,3 @@ func run(server: Server, data: Array, conn: NetworkServerManager.Connection) -> 
 	
 	server.network_manager.connections[hash_id] = conn
 	conn.id = hash_id
-	
-	#var space := server.space_manager.ServerSpace.new()
-	#server.space_manager.add_space(space)
-	#server.space_manager.assign_client_to_space(conn.id, space.id)
