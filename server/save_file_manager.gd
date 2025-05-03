@@ -5,6 +5,7 @@ const SERVER_CONFIG_FILE = "server-config.json"
 var dir: DirAccess
 var config: GameConfig
 
+@warning_ignore("unused_parameter")
 func load_save(save_name: String) -> void:
 	if dir == null: return
 	
@@ -39,7 +40,7 @@ func load_server_config_file() -> void:
 func load_map_state(map_name: String) -> Dictionary:
 	if !dir.dir_exists("maps"):
 		dir.make_dir_recursive("maps")
-	var map_dir := dir.open(dir.get_current_dir() + "/maps/")
+	var map_dir := DirAccess.open(dir.get_current_dir() + "/maps/")
 	var map_json := map_dir.get_current_dir() + "/" + map_name + ".json"
 	var map_data: Dictionary
 	if map_dir.file_exists(map_name + ".json"):
@@ -56,7 +57,7 @@ func load_map_state(map_name: String) -> Dictionary:
 func save_map_state(map_name: String, map_data: Dictionary) -> void:
 	if !dir.dir_exists("maps"):
 		dir.make_dir_recursive("maps")
-	var map_dir := dir.open(dir.get_current_dir() + "/maps/")
+	var map_dir := DirAccess.open(dir.get_current_dir() + "/maps/")
 	var map_json := map_dir.get_current_dir() + "/" + map_name + ".json"
 	var f := FileAccess.open(map_json, FileAccess.WRITE)
 	f.store_string(JSON.stringify(map_data))

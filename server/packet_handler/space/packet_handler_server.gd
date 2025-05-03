@@ -8,6 +8,6 @@ func run(server: Server, data: Array, conn: NetworkServerManager.Connection) -> 
 			var space := server.space_manager.spaces[space_id]
 			run_space_level(space, conn.id, data)
 
-func run_space_level(space: ServerSpaceManager.ServerSpace, client_id: String, data: Array) -> void:
+func run_space_level(_space: ServerSpaceManager.ServerSpace, _client_id: String, _data: Array) -> void:
 	# We don't pass down the conn object because we are limiting the scope of this function in space level only
 	pass

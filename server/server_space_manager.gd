@@ -7,6 +7,7 @@ var spaces: Dictionary[String, ServerSpace] = {}
 var _client_to_spaces_map: Dictionary[String, Array] = {} # We do this so that we don't need to store unnecessary information on Network.Connection
 
 # Map map_names to their loaded_ids
+@warning_ignore("unused_private_class_variable")
 var _map_name_to_id: Dictionary[String, String] = {}
 
 func add_space(space: ServerSpace) -> void:
