@@ -1,5 +1,5 @@
 class_name SaveFileManager extends Node
-
+## TODO: TODO: TODO: TODO: TODO: TODO: Messy code!
 const SERVER_CONFIG_FILE = "server-config.json"
 
 var dir: DirAccess

@@ -9,19 +9,20 @@ func _ready() -> void:
 	# Open my save
 	save_file_manager.new_save("my_save")
 	
-	# Spin up the server
-	network_manager.start_server(save_file_manager.config.address, save_file_manager.config.port)
-	network_manager.packet_received.connect(_on_packet_received)
-	
 	# create a space
 	_load_world("bodega_bay")
 	_load_world("sunny_dunes")
+	
+	# Spin up the server
+	network_manager.start_server(save_file_manager.config.address, save_file_manager.config.port)
+	network_manager.packet_received.connect(_on_packet_received)
 
 func initialize_managers() -> void:
 	space_manager._sent_data.connect(network_manager.network_bus.send_data)
 
 func _on_packet_received(type: String, data: Array, conn: NetworkServerManager.Connection) -> void:
-	print("[SERVER] received from [%s] -> [%s]: %s" % [type, data, conn.id])
+	# NOTE: Noisy ah print
+	#print("[SERVER] received from [%s] -> [%s]: %s" % [type, data, conn.id])
 	var handler := PacketHandlerServer.get_handler(type)
 	if handler:
 		handler.run(self, data, conn)

@@ -23,18 +23,23 @@ func remove_space(space_id: String) -> void:
 		spaces.erase(space_id)
 
 func assign_client_to_space(client_id: String, space_id: String) -> void:
+	if !(space_id in spaces): return
 	if _client_to_spaces_map.has(client_id):
 		var l := _client_to_spaces_map[client_id]
 		if !(client_id in l):
 			l.push_back(client_id)
 	else:
 		_client_to_spaces_map[client_id] = [space_id]
+	# trigger spaces client enter
+	spaces[space_id].add_client_to_space(client_id)
 
 func deassign_client_from_space(client_id: String, space_id: String) -> void:
 	if client_id in _client_to_spaces_map:
 		var l := _client_to_spaces_map[client_id]
 		if space_id in l:
 			l.erase(space_id)
+	if space_id in spaces:
+		spaces[space_id].remove_client_from_space(client_id)
 
 func send_data(client_id: String, type: String, data: Array) -> void:
 	_sent_data.emit(client_id, type, data)
@@ -71,4 +76,3 @@ class ServerSpace extends Node:
 			for client_id: String in connected_clients:
 				if !(client_id in client_list):
 					send_data(client_id, type, data)
-

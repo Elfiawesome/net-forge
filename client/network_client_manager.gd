@@ -58,10 +58,10 @@ class TCPConnection extends Connection:
 	
 	func leave_server() -> void:
 		stream_peer.disconnect_from_host()
-		queue_free()
+		# TODO: this is to prevent errors. RN we directly inject the entire Connection object into various systems. Shoud'nt raelly do that :/
+		# queue_free()
 
 	func send_data(type: String, data: Array = []) -> void:
 		if stream_peer:
 			stream_peer.poll()
 			stream_peer.put_var([type, data])
-
