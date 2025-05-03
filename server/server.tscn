@@ -1,6 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://bsb0lh1phn1p"]
+[gd_scene load_steps=5 format=3 uid="uid://bffvpi0cc68ot"]
 
-[ext_resource type="Script" uid="uid://l2wj8ael01xb" path="res://server/server.gd" id="1_pcfvm"]
+[ext_resource type="Script" uid="uid://be2pw0b82w6e1" path="res://server/server.gd" id="1_pcfvm"]
+[ext_resource type="Script" uid="uid://cb0iv0iojbxp6" path="res://server/room_server_manager.gd" id="2_0wvpq"]
+[ext_resource type="Script" uid="uid://c22fjrhwt8jag" path="res://server/network_server_manager.gd" id="3_u3pyk"]
+[ext_resource type="Script" uid="uid://c8qikisp6cp4m" path="res://server/server_save_file_manager.gd" id="4_gc6nq"]
 
 [node name="Server" type="Node"]
 script = ExtResource("1_pcfvm")
+
+[node name="RoomServerManager" type="Node" parent="."]
+script = ExtResource("2_0wvpq")
+
+[node name="NetworkServerManager" type="Node" parent="."]
+script = ExtResource("3_u3pyk")
+
+[node name="SaveFileManager" type="Node" parent="."]
+script = ExtResource("4_gc6nq")

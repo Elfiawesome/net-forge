@@ -1,8 +1,8 @@
 extends PacketHandlerClient
+# Disconnected from the server
+# data: [{"reason": String}]
 
-func run(game: GameSession, data: Array) -> void:
+func run(client: Client, data: Array) -> void:
+	if !Schema.is_valid(data, [TYPE_DICTIONARY]): return
 	var disconnect_data: Dictionary = data[0]
-	game.disconnect_panel.visible = true
-	game.disconnect_label.text = "Disconnected\n"
-	game.disconnect_label.text += disconnect_data.get("reason", "")
-	game.network_connection.leave_server()
+	client.network_client_manager.connection.leave_server()
