@@ -5,6 +5,7 @@ class_name Client extends Node2D
 @onready var disconnect_panel: Panel = $TopOverlay/DisconnectPanel
 @onready var disconnect_label: Label = $TopOverlay/DisconnectPanel/Label
 
+var map: Map
 
 func _ready() -> void:
 	network_client_manager.connection = NetworkClientManager.TCPConnection.new()

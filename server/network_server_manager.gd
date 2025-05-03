@@ -3,7 +3,11 @@ class_name NetworkServerManager extends Node
 signal packet_received(_type: String, _data: Array, _conn: Connection)
 
 var _tcp_server: TCPServer
+var network_bus: NetworkBus # In case I ever want to go top->down approach. Right now it's bottom->up thru signals approach
 var connections: Dictionary[String, Connection] = {}
+
+func _ready() -> void:
+	network_bus = NetworkBus.new(self)
 
 func _process(_delta: float) -> void:
 	if _tcp_server.is_connection_available():
@@ -21,6 +25,30 @@ func attach_connection(connection: Connection) -> void:
 
 func _on_packet_received(type: String, data: Array, conn: Connection) -> void:
 	packet_received.emit(type, data, conn)
+
+class NetworkBus:
+	var network_server_manager: NetworkServerManager
+
+	func _init(network_server_manager_: NetworkServerManager) -> void:
+		network_server_manager = network_server_manager_
+
+	func send_data(client_id: String, type: String, data: Array = []) -> void:
+		if network_server_manager.connections.has(client_id):
+			network_server_manager.connections[client_id].send_data(type, data)
+	
+	func broadcast_data(type: String, data: Array = []) -> void:
+		for client_id: String in network_server_manager.connections:
+			network_server_manager.connections[client_id].send_data(type, data)
+	
+	func broadcast_data_specific(client_list: Array, type: String, data: Array = [], is_exclude: bool = false) -> void:
+		if !is_exclude:
+			for client_id: String in client_list:
+				send_data(client_id, type, data)
+		else:
+			for client_id: String in network_server_manager.connections:
+				if !(client_id in client_list):
+					send_data(client_id, type, data)
+
 
 class Connection extends Node:
 	signal packet_received(type: String, data: Array)

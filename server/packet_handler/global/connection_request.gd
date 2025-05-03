@@ -13,3 +13,17 @@ func run(server: Server, data: Array, conn: NetworkServerManager.Connection) -> 
 	
 	server.network_manager.connections[hash_id] = conn
 	conn.id = hash_id
+	
+	# Slot this player in bodega_bay and sunny_dunes
+	var target_map_id: String
+	if conn.id.split("Elfiawesome")[1] == "0":
+		target_map_id = "bodega_bay"
+	else:
+		target_map_id = "sunny_dunes"
+	
+	var target_space_id: String
+	if target_map_id in server.space_manager._map_name_to_id:
+		target_space_id = server.space_manager._map_name_to_id[target_map_id]
+	
+	if target_space_id in server.space_manager.spaces:
+		server.space_manager.spaces[target_space_id].add_client_to_space(conn.id)
