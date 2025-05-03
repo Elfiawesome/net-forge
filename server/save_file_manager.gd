@@ -29,10 +29,38 @@ func load_server_config_file() -> void:
 		var f := FileAccess.open(server_config_file, FileAccess.READ)
 		if f != null:
 			config.from_dict(JSON.parse_string(f.get_as_text()))
+		f.close()
 	else:
 		# Create new config and save it
 		var f := FileAccess.open(server_config_file, FileAccess.WRITE)
 		f.store_string(JSON.stringify(config.to_dict()))
+		f.close()
+
+func load_map_state(map_name: String) -> Dictionary:
+	if !dir.dir_exists("maps"):
+		dir.make_dir_recursive("maps")
+	var map_dir := dir.open(dir.get_current_dir() + "/maps/")
+	var map_json := map_dir.get_current_dir() + "/" + map_name + ".json"
+	var map_data: Dictionary
+	if map_dir.file_exists(map_name + ".json"):
+		var f := FileAccess.open(map_json, FileAccess.READ)
+		if f != null:
+			map_data = JSON.parse_string(f.get_as_text())
+	else:
+		map_data = {}
+		var f := FileAccess.open(map_json, FileAccess.WRITE)
+		f.store_string(JSON.stringify(map_data))
+		f.close()
+	return map_data
+
+func save_map_state(map_name: String, map_data: Dictionary) -> void:
+	if !dir.dir_exists("maps"):
+		dir.make_dir_recursive("maps")
+	var map_dir := dir.open(dir.get_current_dir() + "/maps/")
+	var map_json := map_dir.get_current_dir() + "/" + map_name + ".json"
+	var f := FileAccess.open(map_json, FileAccess.WRITE)
+	f.store_string(JSON.stringify(map_data))
+	f.close()
 
 class GameConfig:
 	var port: int

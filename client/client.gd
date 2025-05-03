@@ -2,6 +2,10 @@ class_name Client extends Node2D
 
 @onready var network_client_manager: NetworkClientManager = $NetworkClientManager
 
+@onready var disconnect_panel: Panel = $TopOverlay/DisconnectPanel
+@onready var disconnect_label: Label = $TopOverlay/DisconnectPanel/Label
+
+
 func _ready() -> void:
 	network_client_manager.connection = NetworkClientManager.TCPConnection.new()
 	network_client_manager.connection.set_target("127.0.0.1", 3115).connect_to_server({
