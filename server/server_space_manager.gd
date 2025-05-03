@@ -27,7 +27,7 @@ func assign_client_to_space(client_id: String, space_id: String) -> void:
 	if _client_to_spaces_map.has(client_id):
 		var l := _client_to_spaces_map[client_id]
 		if !(client_id in l):
-			l.push_back(client_id)
+			l.push_back(space_id)
 	else:
 		_client_to_spaces_map[client_id] = [space_id]
 	# trigger spaces client enter
@@ -41,6 +41,7 @@ func deassign_client_from_space(client_id: String, space_id: String) -> void:
 	if space_id in spaces:
 		spaces[space_id].remove_client_from_space(client_id)
 
+# TODO: Remove this cuz it'll probably be unused. Or at least maek into private '_send_data'
 func send_data(client_id: String, type: String, data: Array) -> void:
 	_sent_data.emit(client_id, type, data)
 
@@ -61,6 +62,7 @@ class ServerSpace extends Node:
 		if (client_id in connected_clients):
 			connected_clients.erase(client_id)
 	
+	# Networking functions
 	func send_data(client_id: String, type: String, data: Array = []) -> void:
 		_sent_data.emit(client_id, type, data)
 	

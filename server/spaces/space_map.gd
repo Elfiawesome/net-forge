@@ -1,6 +1,7 @@
 class_name SpaceMap extends ServerSpaceManager.ServerSpace
 # Here we can store all entities in the area etc etc
 
+var map_id: String
 var map_area_name: String = "null"
 var entities: Dictionary[String, EntityState] = {}
 var _client_id_to_entity_id: Dictionary[String, String] = {} # For when we need to move entity around during client input
@@ -26,6 +27,8 @@ func add_client_to_space(client_id: String) -> void:
 	broadcast_data("entity_snapshot", [get_entities_snapshot(true)])
 
 func remove_client_from_space(client_id: String) -> void:
+	super.remove_client_from_space(client_id)
+	
 	if client_id in _client_id_to_entity_id:
 		var entity_id := _client_id_to_entity_id[client_id]
 		broadcast_data("despawn_entity", [entity_id])

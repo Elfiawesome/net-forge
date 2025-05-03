@@ -7,6 +7,7 @@ func run(client: Client, data: Array) -> void:
 	
 	if client.map != null:
 		#unload that map
+		print("unloadmap")
 		client.map.queue_free()
 		pass
 	
