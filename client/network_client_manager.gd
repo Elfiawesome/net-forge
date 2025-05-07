@@ -3,10 +3,11 @@ class_name NetworkClientManager extends Node
 var connection: Connection
 
 class Connection extends Node:
+	@warning_ignore("unused_signal")
 	signal packet_received(_type: String, _data: Array)
-
+	
 	var _request_data: Dictionary
-
+	
 	func connect_to_server(request_data: Dictionary = {}) -> void:
 		_request_data = request_data
 	func send_data(_type: String, _data: Array = []) -> void: pass

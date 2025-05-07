@@ -1,15 +1,20 @@
 extends PacketHandlerServer
-# Reverse of connection_request
-# Clean up all instances from this client
 
+# We reverse whatever we did in connection_request
 func run(server: Server, _data: Array, conn: NetworkServerManager.Connection) -> void:
-	if conn.id != "":
-		if server.network_manager.connections.has(conn.id):
-			server.network_manager.connections.erase(conn.id)
-			
-		# Remove from any connected spaces
-		if server.space_manager._client_to_spaces_map.has(conn.id):
-			var space_list := server.space_manager._client_to_spaces_map[conn.id]
-			for space_id: String in space_list:
-				if space_id in server.space_manager.spaces:
-					server.space_manager.spaces[space_id].remove_client_from_space(conn.id)
+	var client_id: String = conn.id
+	if client_id != "":
+		pass
+		# STEP 1: Remove client from NetworkManager
+		if server.network_manager.connections.has(client_id):
+			server.network_manager.connections.erase(client_id)
+		
+		# STEP 2: Unload him from PlayerStatesManager (NOTE: For now we will save it on server level instead of manager level)
+		if server.player_states_manager.has_player(client_id):
+			server.server_bus.persitance.save_player_data(client_id, 
+				server.player_states_manager.get_player(client_id).to_dict()
+			)
+			server.player_states_manager.remove_player(client_id)
+
+		# STEP 3: Remove him from space
+		server.space_manager.deassign_client_from_space(client_id)

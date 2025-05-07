@@ -10,20 +10,27 @@ func run(server: Server, data: Array, conn: NetworkServerManager.Connection) -> 
 	if hash_id in server.network_manager.connections:
 		conn.force_disconnect("A username is already in this server!")
 		return
-	
+
+	# STEP 1: Add to NetworkManager for network communication
+	# Add player connection to the network 
 	server.network_manager.connections[hash_id] = conn
 	conn.id = hash_id
+	conn.send_data("request_accepted", [server.persistance_manager.server_config.to_json()])
 	
-	# Slot this player in bodega_bay and sunny_dunes
-	var target_map_id: String
-	if conn.id.split("Elfiawesome")[1] == "0" or conn.id.split("Elfiawesome")[1] == "2":
-		target_map_id = "bodega_bay"
-	else:
-		target_map_id = "sunny_dunes"
+	# STEP 2: Add to PlayerStatesManager for global player state
+	# load player data from save & create save file if he doesnt have a save
+	var player_data := server.persistance_manager.bus.load_player_data(conn.id) as Dictionary
+	server.player_states_manager.add_player(
+		conn.id,
+		username,
+		player_data
+	)
+	if player_data.is_empty():
+		server.persistance_manager.bus.save_player_data(
+			conn.id, 
+			server.player_states_manager.get_player(conn.id).to_dict()
+		)
 	
-	var target_space_id: String
-	if target_map_id in server.space_manager._map_name_to_id:
-		target_space_id = server.space_manager._map_name_to_id[target_map_id]
-	
-	if target_space_id in server.space_manager.spaces:
-		server.space_manager.assign_client_to_space(conn.id, target_space_id)
+	# STEP 3: Add him to a space
+	var new_space := server.space_manager.add_space("space")
+	if new_space: server.space_manager.assign_client_to_space(conn.id, new_space.id)

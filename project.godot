@@ -10,11 +10,12 @@ config_version=5
 
 [application]
 
-config/name="NetForge"
-config/version="0.0.1"
+config/name="Emoji Brawl"
+config/description="Emoji Brawl"
 run/main_scene="uid://cmx7kkjbo4qtm"
 config/features=PackedStringArray("4.4", "Forward Plus")
 boot_splash/show_image=false
+config/icon="res://icon.svg"
 
 [autoload]
 

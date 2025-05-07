@@ -3,13 +3,14 @@ class_name NetworkServerManager extends Node
 signal packet_received(_type: String, _data: Array, _conn: Connection)
 
 var _tcp_server: TCPServer
-var network_bus: NetworkBus # In case I ever want to go top->down approach. Right now it's bottom->up thru signals approach
+var bus: NetworkBus
 var connections: Dictionary[String, Connection] = {}
 
 func _ready() -> void:
-	network_bus = NetworkBus.new(self)
+	bus = NetworkBus.new(self)
 
 func _process(_delta: float) -> void:
+	if !_tcp_server: return
 	if _tcp_server.is_connection_available():
 		var connection := TCPConnection.new(_tcp_server.take_connection())
 		attach_connection(connection)
@@ -26,30 +27,6 @@ func attach_connection(connection: Connection) -> void:
 func _on_packet_received(type: String, data: Array, conn: Connection) -> void:
 	packet_received.emit(type, data, conn)
 
-class NetworkBus:
-	var network_server_manager: NetworkServerManager
-
-	func _init(network_server_manager_: NetworkServerManager) -> void:
-		network_server_manager = network_server_manager_
-
-	func send_data(client_id: String, type: String, data: Array = []) -> void:
-		if network_server_manager.connections.has(client_id):
-			network_server_manager.connections[client_id].send_data(type, data)
-	
-	func broadcast_data(type: String, data: Array = []) -> void:
-		for client_id: String in network_server_manager.connections:
-			network_server_manager.connections[client_id].send_data(type, data)
-	
-	func broadcast_data_specific(client_list: Array, type: String, data: Array = [], is_exclude: bool = false) -> void:
-		if !is_exclude:
-			for client_id: String in client_list:
-				send_data(client_id, type, data)
-		else:
-			for client_id: String in network_server_manager.connections:
-				if !(client_id in client_list):
-					send_data(client_id, type, data)
-
-
 class Connection extends Node:
 	signal packet_received(type: String, data: Array)
 
@@ -61,13 +38,15 @@ class Connection extends Node:
 		add_child(_timeout_timer)
 		_timeout_timer.one_shot = true
 		_timeout_timer.timeout.connect(
-			func() -> void: pass
+			func() -> void: 
+				# TODO: Implement timeout handling (like force disconnect or something)
+				pass
 		)
 	
 	func force_disconnect(disconnect_reason: String = "Unknown disconnected by server.") -> void:
 		var disconnect_data := {"reason": disconnect_reason}
-		send_data("force_disconnect", [disconnect_data])
-		packet_received.emit("connection_lost", [disconnect_data])
+		send_data("force_disconnect", [disconnect_data]) # Tell disconnecting client
+		packet_received.emit("connection_lost", [disconnect_data]) # Tell server that client disconnected
 		queue_free()
 	
 	func send_data(_type: String, _data: Array = []) -> void: pass
@@ -107,3 +86,26 @@ class TCPConnection extends Connection:
 	func send_data(type: String, data: Array = []) -> void:
 		stream_peer.poll()
 		stream_peer.put_var([type, data])
+
+class NetworkBus:
+	var _network_server_manager: NetworkServerManager
+	
+	func _init(network_server_manager_: NetworkServerManager) -> void:
+		_network_server_manager = network_server_manager_
+
+	func send_data(client_id: String, type: String, data: Array = []) -> void:
+		if _network_server_manager.connections.has(client_id):
+			_network_server_manager.connections[client_id].send_data(type, data)
+	
+	func broadcast_data(type: String, data: Array = []) -> void:
+		for client_id: String in _network_server_manager.connections:
+			_network_server_manager.connections[client_id].send_data(type, data)
+	
+	func broadcast_data_specific(client_list: Array, type: String, data: Array = [], is_exclude: bool = false) -> void:
+		if !is_exclude:
+			for client_id: String in client_list:
+				send_data(client_id, type, data)
+		else:
+			for client_id: String in _network_server_manager.connections:
+				if !(client_id in client_list):
+					send_data(client_id, type, data)

@@ -1,12 +1,8 @@
 extends PacketHandlerClient
 
-
 func run(client: Client, data: Array) -> void:
 	if !Schema.is_valid(data, [TYPE_DICTIONARY]): return
-	
-	if client.map == null:
-		# No map loaded, so we can't spawn entities
-		return
+	if client.map == null: return
 	
 	var entities_snapshot: Dictionary = data[0]
 	for entity_id: String in entities_snapshot:
@@ -16,4 +12,4 @@ func run(client: Client, data: Array) -> void:
 			client.map.entities[entity_id].deserialize(entity_data)
 		else:
 			# Create w initial state if dont
-			client.map.create_entity(entity_id, entity_data)
+			client.map.spawn_entity(entity_id, entity_data)
