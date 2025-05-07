@@ -15,6 +15,7 @@ func run(server: Server, data: Array, conn: NetworkServerManager.Connection) -> 
 	# Add player connection to the network 
 	server.network_manager.connections[hash_id] = conn
 	conn.id = hash_id
+	conn._is_conencted = true
 	conn.send_data("request_accepted", [server.persistance_manager.server_config.to_json()])
 	
 	# STEP 2: Add to PlayerStatesManager for global player state

@@ -43,7 +43,7 @@ func _on_packet_received(type: String, data: Array, conn: NetworkServerManager.C
 
 func shutdown() -> void:
 	# Simulate disconnection on all clients 
-	# NOTE: Apparently you cant just anyhow delete keys ina  dictionary while in a loop cuz it didnt work here
+	# NOTE: Apparently you cant just anyhow delete keys in a  dictionary while in a loop cuz it didnt work here
 	for client_id: String in network_manager.connections.keys():
 		network_manager.connections[client_id].force_disconnect("Server Shutdown...")
 	

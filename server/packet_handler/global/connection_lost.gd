@@ -4,10 +4,10 @@ extends PacketHandlerServer
 func run(server: Server, _data: Array, conn: NetworkServerManager.Connection) -> void:
 	var client_id: String = conn.id
 	if client_id != "":
-		pass
 		# STEP 1: Remove client from NetworkManager
 		if server.network_manager.connections.has(client_id):
 			server.network_manager.connections.erase(client_id)
+		conn._is_conencted = false
 		
 		# STEP 2: Unload him from PlayerStatesManager (NOTE: For now we will save it on server level instead of manager level)
 		if server.player_states_manager.has_player(client_id):

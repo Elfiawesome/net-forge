@@ -32,16 +32,18 @@ class Connection extends Node:
 
 	var id: String
 	var _timeout_timer: Timer
+	var _is_conencted: bool = false
 	
 	func _ready() -> void:
 		_timeout_timer = Timer.new()
 		add_child(_timeout_timer)
 		_timeout_timer.one_shot = true
 		_timeout_timer.timeout.connect(
-			func() -> void: 
-				# TODO: Implement timeout handling (like force disconnect or something)
-				pass
+			func() -> void:
+				if !_is_conencted:
+					force_disconnect("Client did not sent request_connection.")
 		)
+		_timeout_timer.start(2)
 	
 	func force_disconnect(disconnect_reason: String = "Unknown disconnected by server.") -> void:
 		var disconnect_data := {"reason": disconnect_reason}
