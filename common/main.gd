@@ -12,13 +12,16 @@ func _ready() -> void:
 		add_child(server)
 	
 	client = CLIENT_SCENE.instantiate()
-	if server: client.game_config = server.persistance_manager.server_config
 	add_child(client)
-	client.connect_to_server(
-		"127.0.0.1",
-		51134,
-		Global.username
-	)
+	var new_connection: NetworkClientManager.Connection
+	if server:
+		client.game_config = server.persistance_manager.server_config
+		new_connection = NetworkClientManager.IntegratedConnection.new(server.network_manager)
+	else:
+		new_connection = NetworkClientManager.TCPConnection.new()
+		new_connection.set_target("127.0.0.1", 51134)
+	client.network_client_manager.connection = new_connection
+	client.connect_to_server(Global.username)
 
 
 func _input(event: InputEvent) -> void:

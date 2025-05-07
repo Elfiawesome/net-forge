@@ -52,8 +52,11 @@ class Connection extends Node:
 	func send_data(_type: String, _data: Array = []) -> void: pass
 
 class IntegratedConnection extends Connection:
-	# TODO: Implement integrated connection
-	pass
+	signal packet_sent(type: String, data: Array)
+	
+	func send_data(type: String, data: Array = []) -> void:
+		packet_sent.emit(type, data)
+
 
 class TCPConnection extends Connection:
 	var stream_peer: StreamPeerTCP
