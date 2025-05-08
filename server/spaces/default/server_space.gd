@@ -12,3 +12,6 @@ func client_joined(client_id: String) -> void:
 func client_left(client_id: String) -> void:
 	if (client_id in connected_clients):
 		connected_clients.erase(client_id)
+
+func broadcast_local(type: String, data: Array) -> void:
+	server_bus.network.broadcast_data_specific(connected_clients, type, data)
