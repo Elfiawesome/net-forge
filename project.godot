@@ -40,6 +40,7 @@ folder_colors={
 "res://asset/": "blue",
 "res://client/": "teal",
 "res://common/": "purple",
+"res://game_packs/": "gray",
 "res://server/": "red"
 }
 
