@@ -3,7 +3,7 @@ class_name Client extends Node2D
 @onready var network_client_manager: NetworkClientManager = $NetworkClientManager
 @onready var top_overlay: ClientTopOverlay = $TopOverlay
 
-var game_config: PersistanceManager.ServerConfig
+var game_config: ServerConfig
 
 func _ready() -> void:
 	top_overlay.set_overlay_message("Loading into server...")

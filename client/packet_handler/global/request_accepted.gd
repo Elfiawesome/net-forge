@@ -7,7 +7,7 @@ func run(client: Client, data: Array) -> void:
 	var game_configs_data: Dictionary = data[0]
 	
 	if !client.game_config:
-		client.game_config = PersistanceManager.ServerConfig.new()
+		client.game_config = ServerConfig.new()
 		client.game_config.from_json(game_configs_data)
 	
 	client.top_overlay.display_not()

@@ -15,6 +15,7 @@ func _ready() -> void:
 	add_child(client)
 	var new_connection: NetworkClientManager.Connection
 	if server:
+		# set same config files over
 		client.game_config = server.persistance_manager.server_config
 		new_connection = NetworkClientManager.IntegratedConnection.new(server.network_manager)
 	else:
